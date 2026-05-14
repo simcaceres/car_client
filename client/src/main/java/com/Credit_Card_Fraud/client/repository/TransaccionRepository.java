@@ -8,6 +8,13 @@ import java.util.List;
 public class TransaccionRepository {
     private List<Transaccion> listaTransacciones = new ArrayList<>();
 
+    public void ingestaDesdeCSV(String ruta){
+
+        Transaccion nueva = new Transaccion();
+        nueva.setAmt(150.50);
+
+        listaTransacciones.add(nueva);
+    }
 
 
 }
