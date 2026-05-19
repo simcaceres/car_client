@@ -1,6 +1,7 @@
 package com.Credit_Card_Fraud.client;
 
 import com.Credit_Card_Fraud.client.controller.TransaccionController;
+import com.Credit_Card_Fraud.client.service.TransaccionService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,9 +15,9 @@ public class ClientApplication {
     }
 
     @Bean
-    CommandLineRunner init(TransaccionController controller){
+    CommandLineRunner init(TransaccionService transaccionService){
         return  args -> {
-            controller.ejecutarIngestaCompleta();
+            transaccionService.iniciarPipeline();
         };
     }
 
