@@ -1,6 +1,7 @@
 package com.Credit_Card_Fraud.client.controller;
 
 import com.Credit_Card_Fraud.client.service.TransaccionService;
+import com.Credit_Card_Fraud.client.model.Transaccion;
 
 public class TransaccionController {
 
