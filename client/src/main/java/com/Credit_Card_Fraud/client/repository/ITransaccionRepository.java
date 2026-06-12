@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ITransaccionRepository extends JpaRepository<Transaccion, String> {
-    // Este archivo queda completamente vacío aquí adentro. Spring hace la magia solo.
+    // Queda vacío. No metas ninguna clase ni método aquí adentro.
 }
