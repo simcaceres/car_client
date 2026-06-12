@@ -4,9 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
+import lombok.Data;
 
 @Entity
 @Table(name = "transacciones") // Crea automáticamente la tabla 'transacciones' en PostgreSQL
+@Data
 public class Transaccion {
 
     @Id // Define esta variable como la Llave Primaria en Postgres

@@ -5,11 +5,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ITransaccionRepository extends JpaRepository<Transaccion, String> {
+public class TransaccionRepository {
 
     @Autowired
     private ITransaccionRepository iTransaccionRepository;
@@ -17,7 +16,7 @@ public interface ITransaccionRepository extends JpaRepository<Transaccion, Strin
     public void ingestaDesdeCSV(String ruta){
         System.out.println("🚀 Iniciando Pipeline - Buscando el archivo en la ruta: " + ruta);
 
-        int registrosCargados = 0; // Contador manual para el log final
+        int registrosCargados = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(ruta))){
             String linea;
@@ -30,15 +29,12 @@ public interface ITransaccionRepository extends JpaRepository<Transaccion, Strin
                     continue;
                 }
 
-                // Separamos la línea por comas
                 String[] datos = linea.split(",");
 
-                // Validamos que la línea tenga datos suficientes para evitar errores de índice
                 if (datos.length >= 23) {
                     Transaccion nueva = new Transaccion();
 
-                    // 🌟 1. MAPEO DE LOS DATOS DEL CSV AL OBJETO
-                    // (Ajusta los índices [0], [1], [2] según el orden exacto de las columnas de tu CSV)
+                    // 1. MAPEO DE LOS DATOS DEL CSV AL OBJETO
                     nueva.setId(datos[0].trim());
                     nueva.setFirst(datos[1].trim());
                     nueva.setLast(datos[2].trim());
@@ -66,10 +62,10 @@ public interface ITransaccionRepository extends JpaRepository<Transaccion, Strin
                     nueva.setMerch_lat(Double.parseDouble(datos[20].trim()));
                     nueva.setMerch_long(Double.parseDouble(datos[21].trim()));
 
-                    // Variable Objetivo (0 o 1)
+                    // Variable Objetivo
                     nueva.setIs_fraud(Integer.parseInt(datos[22].trim()));
 
-                    // 🌟 2. LA MAGIA DE JPA: Guardamos la fila directamente en PostgreSQL de Render
+                    // 2. Guardamos en PostgreSQL de Render
                     iTransaccionRepository.save(nueva);
 
                     registrosCargados++;
@@ -79,11 +75,11 @@ public interface ITransaccionRepository extends JpaRepository<Transaccion, Strin
             System.out.println("✅ Ingesta completada con éxito en PostgreSQL. Registros insertados: " + registrosCargados);
 
         } catch (IOException e){
-            System.err.println("ERROR al leer el archivo CSV en la ruta específica: " + e.getMessage());
+            System.err.println("ERROR al leer el archivo CSV: " + e.getMessage());
         } catch (NumberFormatException e) {
-            System.err.println("ERROR de formato numérico al transformar una columna: " + e.getMessage());
+            System.err.println("ERROR de formato numérico: " + e.getMessage());
         } catch (Exception e){
-            System.err.println("Ocurrió un error inesperado procesando los datos: " + e.getMessage());
+            System.err.println("Ocurrió un error inesperado: " + e.getMessage());
         }
     }
 }
