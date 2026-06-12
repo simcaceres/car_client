@@ -50,6 +50,7 @@ public class TransaccionRepository {
                     nueva.setLng(Double.parseDouble(datos[12].trim()));
 
                     // Detalles de la transacción
+
                     nueva.setTrans_num(datos[13].trim());
                     nueva.setTrans_date_trans_time(datos[14].trim());
                     nueva.setUnix_time(Long.parseLong(datos[15].trim()));
