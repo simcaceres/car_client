@@ -1,22 +1,66 @@
 package com.Credit_Card_Fraud.client.service;
 
-import com.Credit_Card_Fraud.client.repository.TransaccionRepository;
+import com.Credit_Card_Fraud.client.model.Transaccion;
+import com.Credit_Card_Fraud.client.repository.ITransaccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class TransaccionService {
 
     @Autowired
-    private TransaccionRepository repository;
+    private ITransaccionRepository iTransaccionRepository;
 
-    // 🌟 AGREGAMOS (String ruta) AQUÍ ARRIBA:
-    public void iniciarPipeline(String ruta) {
-        System.out.println("--- Service: Iniciando Fase de Ingesta ---");
+    // ==========================================
+    // TUS METODOS DE ANALÍTICA ORIGINALES
+    // ==========================================
+    public long contarRegistros() {
+        return iTransaccionRepository.count();
+    }
 
-        // Ahora usamos la variable 'ruta' que viene desde el controlador
-        repository.ingestaDesdeCSV(ruta);
+    public double calcularPromedioAmt() {
+        return iTransaccionRepository.findAll().stream()
+                .mapToDouble(Transaccion::getAmt)
+                .average()
+                .orElse(0.0);
+    }
 
-        System.out.println("--- Service: Ingesta Completada con Éxito ---");
+    public long contarFraudes() {
+        return iTransaccionRepository.findByIsFraud(1).size();
+    }
+
+    // ==========================================
+    // MÉTODOS CRUD E INTEGRACIÓN DE APIS
+    // ==========================================
+
+    public Transaccion guardarTransaccion(Transaccion transaccion) {
+        transaccion = evaluarFraudeInternacional(transaccion);
+        return iTransaccionRepository.save(transaccion);
+    }
+
+    public List<Transaccion> obtenerPorTarjeta(String ccNum) {
+        return iTransaccionRepository.findByCcNum(ccNum);
+    }
+
+    public void eliminarTransaccion(String id) {
+        iTransaccionRepository.deleteById(id);
+    }
+
+    public void bloquearTarjetaEmergencia(String ccNum) {
+        List<Transaccion> transacciones = iTransaccionRepository.findByCcNum(ccNum);
+        for (Transaccion t : transacciones) {
+            t.setCategory("BLOQUEADA_VIAJE");
+        }
+        iTransaccionRepository.saveAll(transacciones);
+    }
+
+    private Transaccion evaluarFraudeInternacional(Transaccion t) {
+        if (t.getAmt() > 5000.0 && !t.getState().equals("CL")) {
+            t.setIs_fraud(1);
+        } else {
+            t.setIs_fraud(0);
+        }
+        return t;
     }
 }
