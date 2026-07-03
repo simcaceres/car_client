@@ -26,8 +26,8 @@ public class TransaccionController implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Mantiene tu lógica exacta: lee el CSV e inyecta la data en la base de datos de Render
-        String rutaCSV = "C:\\Users\\tobia\\OneDrive\\Escritorio\\datos_limpios_100k.csv";
-        transaccionRepository.ingestaDesdeCSV(rutaCSV);
+        //String rutaCSV = "C:\\Users\\tobia\\OneDrive\\Escritorio\\datos_limpios_100k.csv";
+        //transaccionRepository.ingestaDesdeCSV(rutaCSV);
     }
 
     // ==========================================
